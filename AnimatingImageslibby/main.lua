@@ -1,7 +1,7 @@
 -- Title: AnimatingImages
 -- Name: Libby Valentino 
 -- Course: ICS2O/3C
--- This program displays three diffrent moving images.
+-- This program displays diffrent moving images.
 -----------------------------------------------------------------------------------------
 
 -- hide the status bar
@@ -15,57 +15,110 @@ local backgroundImage = display.newImageRect("Images/forest.jpg", 1024, 768)
 backgroundImage.x = display.contentCenterX
 backgroundImage.y = display.contentCenterY
 
+-----------------------------------------------------------------------------
+--SOUND CREATION
+-----------------------------------------------------------------------------
 
--- display winnie with no honey
-local PoohWithNoHoney = display.newImageRect("Images/.png", 924, 365)
+--local song = audio.loadSound("sounds/song.mp3")
 
--- charecter image of tigger
-local tigger = display.newImageRect("Images/tigger.png", 200, 200)
+--make the sound play
+--audio.play( song, {duration=1000000} )
+
+-------------------------------------------------------------------------------
+--MICKEY CREATION
+-------------------------------------------------------------------------------
+
+
+-- charecter image of mickey
+local mickey = display.newImageRect("Images/mickey.png", 200, 200)
 
 --set the image to be transparent
-tigger.alpha = 0
+mickey.alpha = 0
 
 --set the position on the ipad
-tigger.x = 0
-tigger.y = display.contentHeight/2
+mickey.x = 0
+mickey.y = display.contentHeight*8.69/10
 
---Funtion: MoveTigger
+--Funtion: MoveMickey
 --Input: this function accepts an event listner
 --Output: none
 --Description: this function ads the scroll speed to the x-value of the chocolate
-local function MoveTigger( event )
+local function MoveMickey( event )
 	--add the scroll speed to the x-value of the chocolate
-	tigger.x = tigger.x + scrollspeed
+	mickey.x = mickey.x + scrollspeed
 	--change the transparency of the chocolate, so that it fades out
-	tigger.alpha = tigger.alpha + 0.056
+	mickey.alpha = mickey.alpha + 0.05
 
 end
 
 --MoveHunny will be called over and over
-Runtime:addEventListener("enterFrame", MoveTigger)
+Runtime:addEventListener("enterFrame", MoveMickey)
+
+----------------------------------------------------------------------------------
+--MINNIE CREATION
+----------------------------------------------------------------------------------
+
 
 --add in second charecter image
-local eeyore = display.newImageRect("Images/minnie.png", 200, 200)
+local minnie = display.newImageRect("Images/minnie.png", 200, 200)
 
 --set the image to be transparent
-eeyore.alpha = 0
+minnie.alpha = 0
 
---set his place on the screen 
-eeyore.x = 0
-eeyore.y = 0
+--set her place on the screen 
+minnie.x = 0
+minnie.y = display.contentHeight*8/10
 
 
---Funtion: MoveEeyore
+--Funtion: MoveMinnie
 --Input: this function accepts an event listner
 --Output: none
---Description: this function ads the scroll speed to the x-value of eeyore
-local function MoveEeyore( event )
+--Description: this function ads the scroll speed to the x-value of minnie
+local function MoveMinnie( event )
 	--add the scroll speed to the x-value of eeyore
-	eeyore.x = eeyore.y + scrollspeed
+	minnie.x = minnie.y + scrollspeed
 	--change the transparency of eeyore, so that it fades out
-	eeyore.alpha = eeyore.alpha + 0.007
+	minnie.alpha = minnie.alpha + 0.09
 
 end
 
---MoveEeyore will be called over and over again
-Runtime:addEventListener("enterframe", MoveEeyore)
+--MoveMinnie will be called over and over again
+Runtime:addEventListener("enterframe", MoveMinnie)
+
+------------------------------------------------------------------------------------------
+--DISPLAYING text
+------------------------------------------------------------------------------------------
+
+--display new text 
+local textObject = display.newText( "Welcome to the Club House!", 500, 500, nil, 50)
+
+--set the colour of the text 
+textObject:setTextColor(1, 1, 1)
+
+------------------------------------------------------------------------------------------
+--DAISY DUCK CREATION
+------------------------------------------------------------------------------------------
+
+--display daisy duck
+local daisy = display.newImageRect("Images/daisy.png", 200, 200)
+
+--set the place on the screen
+daisy.x = 0
+daisy.y = display.contentHeight/2
+
+
+--Funtion: MoveDaisy
+--Input: this function accepts an event listner
+--Output: none
+--Description: this function ads the scroll speed to the x-value of minnie
+local function MoveDaisy( event )
+	--add the scroll speed to the x-value of eeyore
+	daisy.x = daisy.y + scrollspeed
+
+end
+
+------------------------------------------------------------------------------------------
+--DONALD DUCK CREATION
+------------------------------------------------------------------------------------------
+
+local donald = display.newImageRect("Images/donald.png", 200, 200)
