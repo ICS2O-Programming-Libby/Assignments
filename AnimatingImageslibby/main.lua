@@ -23,7 +23,7 @@ backgroundImage.y = display.contentCenterY
 local song = audio.loadSound("sounds/song.mp3")
 
 --make the sound play
---audio.play( song, {duration=1000000} )
+audio.play( song, {duration=1000000} )
 
 ----------------------------------------------------------------------------------
 --MINNIE CREATION
