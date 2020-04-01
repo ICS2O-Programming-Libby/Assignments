@@ -106,10 +106,13 @@ local function UpdateTime()
 
 	    elseif (lives == 1) then 
 			heart2.isVisible = false
+			heart3.isVisible = false 
 			wrongSoundChannel = audio.play(wrongSound)
 	
 		elseif (lives == 0) then 
-			heart1.isVisible = false		
+			heart1.isVisible = false
+			heart2.isVisible = false 
+			heart3.isVisible = false 		
 	    end 
 	   --cancel timer
 	   timer.cancel(countDownTimer)
@@ -437,11 +440,6 @@ local function MoveWin( event )
 	end
 end
 
-win = display.newImageRect("images/youWin.gif", 500, 500)
-win.x = display.contentWidth/2
-win.y = display.contentHeight/2
-win.isVisible = false 
-
 --MoveWin will be called over and over again
 Runtime:addEventListener("enterFrame", MoveWin)
 
@@ -451,6 +449,12 @@ Runtime:addEventListener("enterFrame", MoveWin)
 ---------------------------------------------------------------------------------------------
 --OBJECT CREATION
 ---------------------------------------------------------------------------------------------
+
+-- display you win image 
+win = display.newImageRect("images/youWin.gif", 500, 500)
+win.x = display.contentWidth/2
+win.y = display.contentHeight/2
+win.isVisible = false 
 
 --displays a question and sets the colour 
 questionObject = display.newText("",display.contentWidth/3, display.contentHeight/2, nil, 55)
