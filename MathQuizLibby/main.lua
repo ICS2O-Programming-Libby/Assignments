@@ -376,14 +376,15 @@ local function NumericFieldListener ( event )
 			correctObject.isVisible = false
 			questionObject.isVisible = false 
 			numericField.isVisible = false 
+			incorrectObject.isVisible = false 
 		end 
 
 		    if (incorrectPoints == 1) then 
-            	heart2.isVisible = false
+            	heart3.isVisible = false
             end 
             if (incorrectPoints == 2) then
-            	heart1.isVisible = false 
-            	heart2.isVisible = false  
+            	heart2.isVisible = false 
+            	heart3.isVisible = false  
             end 
             if (incorrectPoints == 3) then
             	heart1.isVisible = false 
@@ -452,7 +453,7 @@ lose.isVisible = false
 
 -- display the lives on screen 
 heart1 = display.newImageRect("images/heart.png", 100, 100)
-heart1.x = display.contentWidth*7/8
+heart1.x = display.contentWidth*5/8
 heart1.y = display.contentHeight*1/7
 
 heart2 = display.newImageRect("Images/heart.png", 100, 100)
@@ -460,7 +461,7 @@ heart2.x = display.contentWidth*6/8
 heart2.y = display.contentHeight*1/7
 
 heart3 = display.newImageRect("Images/heart.png", 100, 100)
-heart3.x = display.contentWidth*5/8
+heart3.x = display.contentWidth*7/8
 heart3.y = display.contentHeight/7
 heart3.isVisible = true  
 
