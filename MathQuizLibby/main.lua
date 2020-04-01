@@ -401,9 +401,49 @@ end
 
 
 
+---------------------------------------------------------------------------
+--Anniation
+---------------------------------------------------------------------------
+
+--add in minnie charecter image
+--local minnie = display.newImageRect("Images/heart.png", 100, 100)
 
 
+--add the global variable for speed
+scrollspeed = 5
+--set the direction 
+local MovingUp = 1
 
+
+--Funtion: MoveWin
+--Input: this function accepts an event 
+--Output: none
+--Description: this function ads the scroll speed to the x-value of win
+local function MoveWin( event )
+
+	if (MovingUp == 1) then 
+		win.y = win.y - scrollspeed 
+	else 
+		win.y = win.y + scrollspeed
+	end 
+
+	if (win.y < 0) then 
+		MovingUp = 0 
+
+	end 
+
+	if (win.y > 1024) then 
+		MovingUp = 1
+	end
+end
+
+win = display.newImageRect("images/youWin.gif", 500, 500)
+win.x = display.contentWidth/2
+win.y = display.contentHeight/2
+win.isVisible = false 
+
+--MoveWin will be called over and over again
+Runtime:addEventListener("enterFrame", MoveWin)
 
 
 
@@ -440,10 +480,12 @@ numericField:addEventListener("userInput", NumericFieldListener)
 --pointsText = display.newText("Points = " .. points, 800, 100, nil, 50 ) 
 
 -- display Correct image and make it invisible
+--[[
 win = display.newImageRect("Images/youWin.gif", 1024, 768)
 win.x = display.contentWidth/2
 win.y = display.contentHeight/2
 win.isVisible = false 
+]]
 
 -- display you lose image and make it invisible
 lose = display.newImageRect("Images/gameOver.png",1024, 768)
