@@ -67,7 +67,7 @@ local winSoundChannel
 
 -- Keep track of time in seconds
 --local secondsLeft = 20 * 60   -- 20 minutes * 60 seconds
-local secondsLeft = 10   -- 20 minutes * 60 seconds
+local secondsLeft = 11   -- 20 minutes * 60 seconds
 
 --local clockText = display.newText("20:00", display.contentCenterX, 80, native.systemFontBold, 80)
 --local clockText = display.newText("Start", 100, 80, native.systemFontBold, 80)
@@ -115,12 +115,12 @@ local function UpdateTime()
 			heart3.isVisible = false 		
 	    end 
 	   --cancel timer
-	   timer.cancel(countDownTimer)
+	   --timer.cancel(countDownTimer)
 
 	 -- *****CALLL THE FUNCTION TO ASK A NEW QUESTION*****
      --AskQuestion()
-     secondsLeft = 10
-     countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
+     secondsLeft = 11
+     --countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
     end 
 
 end 
@@ -129,8 +129,8 @@ end
 local function StartTimer()
 	-- create a countdown timer that loops infinitely
 	if (lives > 0) then
-		secondsLeft = 10
-		countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
+		secondsLeft = 11
+		countDownTimer = timer.performWithDelay(1000, UpdateTime, 0)
 		print ("Start timer.")
 	else
 		timer.cancel(countDownTimer)
@@ -277,7 +277,7 @@ local function HideCorrect()
 	-- hide the correct answer text
 	correctObject.isVisible = false
 	AskQuestion()
-	StartTimer()
+	-- StartTimer()
 end
 
 local function HideIncorrect()
@@ -285,7 +285,7 @@ local function HideIncorrect()
 	--hide the incorrect answer text
 	incorrectObject.isVisible = false 
 	AskQuestion()
-	StartTimer()
+	-- StartTimer()
 end
 
 local function HideWin()
@@ -467,8 +467,8 @@ correctObject:setTextColor(195/255, 147/255, 200/255)
 correctObject.isVisible = false
 
 --create the Incorrect text object and ake it invisible
-incorrectObject = display.newText("Incorrect!" , 512, 500, nil, 30)
---incorrectObject = display.newText( tostring(displayCorrectAnswer), 512, 500, nil, 30)
+incorrectObject.text = display.newText("Incorrect! the cprrect answer was" .. correctAnswer , 512, 500, nil, 30)
+-- incorrectObject = display.newText( tostring(displayCorrectAnswer), 512, 500, nil, 30)
 incorrectObject:setTextColor(109/255, 86/255, 137/255)
 incorrectObject.isVisible = false
 
