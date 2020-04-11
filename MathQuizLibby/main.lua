@@ -23,7 +23,7 @@ local NumericTextFields
 local randomNumber1
 local randomNumber2
 local userAnswer
-local correctAnswer
+local correctAnswer = 0
 local incorrectAnswer
 local points = 0
 local incorrectPoints = 0
@@ -147,7 +147,7 @@ local function AskQuestion()
 	--StartTimer()
 
 	--generate a random number between 1 and 4 this number picks the operator.  
-	randomOperator = math.random(1, 5)
+	randomOperator = math.random(1, 6)
 	print("randomOperator = " .. randomOperator)
 
 	--if the random operator is 1, then ask an addintion question.
@@ -269,7 +269,20 @@ local function AskQuestion()
 			--create the question in the text object
 			questionObject.text = randomNumber1 .. " ^ " .. randomNumber2 .. " = "
 
+		elseif (randomOperator == 6) then 
+			-- generate a new number √ 
+			randomNumber1 = math.random(1, 100)
+            -- create tempAnswer
+            tempAnswer = randomNumber1 * randomNumber1
+            correctAnswer = randomNumber1
+            print ("correctAnswer (√) = " .. correctAnswer)
+            questionObject.text = "√" .. tempAnswer .. " = "
+
+
+
 	    end
+
+
 end
 
 local function HideCorrect()
@@ -356,6 +369,8 @@ local function NumericFieldListener ( event )
 			print (correctAnswer)
 			--displayCorrectAnswer.text = tostring(correctAnswer)
 			incorrectObject.isVisible = true 
+			-- update the incorrectObject with the correct answer
+            incorrectObject.text = "Incorrect! The correct answer is " .. correctAnswer
 			timer.performWithDelay(50)
 			--displayCorrectAnswer = tostring(correctAnswer)
 			print(displayCorrectAnswer)
@@ -467,7 +482,9 @@ correctObject:setTextColor(195/255, 147/255, 200/255)
 correctObject.isVisible = false
 
 --create the Incorrect text object and ake it invisible
-incorrectObject.text = display.newText("Incorrect! the cprrect answer was" .. correctAnswer , 512, 500, nil, 30)
+-- update the incorrectObject with the correct answer
+-- incorrectObject.text = "Incorrect! The correct answer is " .. correctAnswer
+incorrectObject = display.newText("Incorrect!", 512, 500, nil, 30)
 -- incorrectObject = display.newText( tostring(displayCorrectAnswer), 512, 500, nil, 30)
 incorrectObject:setTextColor(109/255, 86/255, 137/255)
 incorrectObject.isVisible = false
