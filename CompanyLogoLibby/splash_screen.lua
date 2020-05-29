@@ -34,7 +34,7 @@ local jungleSoundsChannel
 local background
 
 -- create the global for scroll speed 
-scrollspeed = 5
+scrollspeed = 8
 
 --------------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
@@ -61,29 +61,19 @@ local function Spin( event )
     robot.x = robot.x + scrollspeed 
 
     -- set how fast robot rotates
-    robot:rotate(2)
-    --change the transparency of robot, so that he fades in
-    --robot.alpha = robot.alpha + 0.03
-
-    -- Go to the main menu screen after the given time.
-    -- timer.performWithDelay ( 1500 )
+    robot:rotate(3)
 end
 
 local function Left( event )
     logo.x = logo.x - scrollspeed
-
-    -- Go to the main menu screen after the given time.
-    -- timer.performWithDelay ( 1500 )   
-
 end
 
 local function Up ( event)
     controller.y = controller.y - scrollspeed
 
     -- make it fade out
-    -- controller.alpha = controller.alpha - 0.03
-    -- Go to the main menu screen after the given time.
-    -- timer.performWithDelay ( 1500 )
+    controller.alpha = controller.alpha - 0.03
+
 end 
 
 
@@ -129,14 +119,14 @@ function scene:create( event )
     sceneGroup:insert( logo )
 
     -- Insert the logo image
-    controller = display.newImageRect("Images 2/controller.png", 100, 100)
+    controller = display.newImageRect("Images 2/controller.png", 80, 85)
 
     -- make it visible at first 
-    -- controller.alpha = 1
+    controller.alpha = 1
 
     -- set the initial x and y position of the logo 
-    controller.x = 700
-    controller.y = display.contentHeight
+    controller.x = 767
+    controller.y = 400
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( controller )
