@@ -23,23 +23,27 @@ local scene = composer.newScene( sceneName )
 -----------------------------------------------------------------------------------------
  
 -- The local variables for this scene
-local beetleship
+local robot
+local logo
+local controller
 local scrollXSpeed = 15
 local scrollYSpeed = -3
 local jungleSounds = audio.loadSound("Sounds/animals144.mp3")
 local jungleSoundsChannel
 
+local background
+
 -- create the global for scroll speed 
-scrollspeed = 5 
+scrollspeed = 5
 
 --------------------------------------------------------------------------------------------
 -- LOCAL FUNCTIONS
 --------------------------------------------------------------------------------------------
 
--- The function that moves the beetleship across the screen
---local function moveBeetleship()
-    --beetleship.x = beetleship.x + scrollXSpeed
-    --beetleship.y = beetleship.y + scrollYSpeed
+-- The function that moves the robot across the screen
+--local function moverobot()
+    --robot.x = robot.x + scrollXSpeed
+    --robot.y = robot.y + scrollYSpeed
 --end
 
 -- internal function to calculate where on 'x' is the object
@@ -54,17 +58,33 @@ end ]]
 
 -- MAKE THE TURTLE SPIN IN A STRAIGHT LINE 
 local function Spin( event )
-    beetleship.x = beetleship.x + scrollspeed 
-    -- call the function 'Calculateline'
-    -- beetleship.y = CalculateLine(beetleship.x)
-    --print ("Y is : " .. beetleship.y)
+    robot.x = robot.x + scrollspeed 
 
-    -- set how fast beetleship rotates
-    beetleship:rotate(15)
-        --change the transparency of beetleship, so that he fades in
-    --beetleship.alpha = beetleship.alpha + 0.03
+    -- set how fast robot rotates
+    robot:rotate(2)
+    --change the transparency of robot, so that he fades in
+    --robot.alpha = robot.alpha + 0.03
+
+    -- Go to the main menu screen after the given time.
+    -- timer.performWithDelay ( 1500 )
 end
 
+local function Left( event )
+    logo.x = logo.x - scrollspeed
+
+    -- Go to the main menu screen after the given time.
+    -- timer.performWithDelay ( 1500 )   
+
+end
+
+local function Up ( event)
+    controller.y = controller.y - scrollspeed
+
+    -- make it fade out
+    -- controller.alpha = controller.alpha - 0.03
+    -- Go to the main menu screen after the given time.
+    -- timer.performWithDelay ( 1500 )
+end 
 
 
 
@@ -86,17 +106,42 @@ function scene:create( event )
     local sceneGroup = self.view
 
     -- set the background to be black
-    display.setDefault("background", 0, 0, 0)
+    display.setDefault("background", 1, 1, 1)
 
-    -- Insert the beetleship image
-    beetleship = display.newImageRect("Images/beetleship.png", 200, 200)
+    -- Insert the robot image
+    robot = display.newImageRect("Images 2/robot.png", 275, 275)
 
-    -- set the initial x and y position of the beetleship
-    beetleship.x = 100
-    beetleship.y = display.contentHeight/2
+    -- set the initial x and y position of the robot
+    robot.x = display.contentWidth/2
+    robot.y = display.contentHeight/4
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( beetleship )
+    sceneGroup:insert( robot )
+
+    -- Insert the logo image
+    logo = display.newImageRect("Images 2/logo.png", 800, 100)
+
+    -- set the initial x and y position of the logo 
+    logo.x = display.contentWidth/2
+    logo.y = display.contentHeight/2
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( logo )
+
+    -- Insert the logo image
+    controller = display.newImageRect("Images 2/controller.png", 100, 100)
+
+    -- make it visible at first 
+    -- controller.alpha = 1
+
+    -- set the initial x and y position of the logo 
+    controller.x = 700
+    controller.y = display.contentHeight
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( controller )
+
+
 
 end -- function scene:create( event )
 
@@ -125,9 +170,14 @@ function scene:show( event )
 
         -- Call the Spin function as soon as we enter the frame.
         Runtime:addEventListener("enterFrame", Spin)
+        -- Call the Left function as soon as we entre the frame.
+        Runtime:addEventListener("enterFrame", Left)
+        -- Call the Up function as soon as we entre the frame.
+        Runtime:addEventListener("enterFrame", Up)
+
 
         -- Go to the main menu screen after the given time.
-        timer.performWithDelay ( 3100, gotoMainMenu)          
+        timer.performWithDelay ( 3500, gotoMainMenu)          
         
     end
 
@@ -149,9 +199,9 @@ function scene:hide( event )
     -- Example: stop timers, stop animation, stop audio, etc.
     if ( phase == "will" ) then  
 
-    -----------------------------------------------------------------------------------------
+     -----------------------------------------------------------------------------------------
 
-    -- Called immediately after scene goes off screen.
+     -- Called immediately after scene goes off screen.
     elseif ( phase == "did" ) then
         
         -- stop the jungle sounds channel for this screen
