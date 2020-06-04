@@ -38,7 +38,6 @@ local scene = composer.newScene( sceneName )
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
 
-local bkg_image
 local playButton
 local creditsButton
 local instructionsButton
@@ -157,7 +156,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image and set it to the center of the screen
-    bkg_image = display.newImage("PhotoShop/Main_Menu.png")
+    local bkg_image = display.newImage("PhotoShop/Main_Menu.png")
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
