@@ -30,25 +30,32 @@ local scene = composer.newScene( sceneName )
 
 -- The local variables for this scene
 local bkg_image
-local monkey
+local tigger
 local score = 0
+
+local varDirection
+local start_x
+scrollspeed = 6
 
 -----------------------------------------------------------------------------------------
 -- FUNCTIONS
 -----------------------------------------------------------------------------------------
 
 
--- this function makes the monkey appear in a random (x, y) position on the screen 
+-- this function makes the tigger appear in a random (x, y) position on the screen 
 -- before calling the hide function 
-function PopUp()
+local function PopUp()
 
     -- choosing random position on the screen beween 0 and the size of the screen 
-    monkey.x = math.random(0, display.contentWidth )
-    monkey.y = math.random(0, display.contentHeight )
+    tigger.x = math.random(0, display.contentWidth )
+    tigger.y = 512 
 
-    -- make the monkey visible 
-    monkey.isVisible = true 
-    timer.performWithDelay(1500, GoAway)  
+    -- make the tigger visible 
+    tigger.isVisible = true 
+    -- make the tigger move
+    --tigger.x = tigger.x + scrollspeed
+    --timer.performWithDelay(1500, GoAway)
+    timer.performWithDelay(100, RunAway)
 end 
 
 -- this function calls the PopuP function after 3 seconds
@@ -56,12 +63,27 @@ function PopUpDelay()
     timer.performWithDelay(3000, PopUp)
 end
 
--- this function makes the monkey invisible and then calls the PopUPDelay function 
+-- this function makes the tigger invisible and then calls the PopUPDelay function 
 function GoAway()
     -- change visibility 
-    monkey.isVisible = false 
+    tigger.isVisible = false 
     -- CALL THE POPUPDELAY FUNCTION.
-    PopUpDelay()
+    --PopUpDelay()
+end
+
+-- this function makes the tigger
+function RunAway()
+    -- change visibility 
+    varDirection = math.random(1,2)
+    if varDirection == 1 then
+        tigger.x = tigger.x - scrollspeed * 25
+    else
+        tigger.x = tigger.x + scrollspeed * 10
+    end
+    --tigger.isVisible = false 
+    -- CALL THE POPUPDELAY FUNCTION.
+    timer.performWithDelay(500, GoAway)
+    timer.performWithDelay(500, PopUpDelay)
 end
 
 -- this function starts the game 
@@ -69,7 +91,7 @@ function GameStart()
     PopUpDelay()
 end
 
--- this funtion increments the score only if the monkey is clicked. It then displays the new score 
+-- this funtion increments the score only if the tigger is clicked. It then displays the new score 
 function Whacked ( event )
     -- if touched  phase just started 
     if (event.phase == "began") then
@@ -91,22 +113,27 @@ function scene:create( event )
 
     -----------------------------------------------------------------------------------------
 
-  -- Creating Background 
-  -- local bkg = display.newRect( 0, 0, display.contentWidth, display.ocntentHeight )
-  -- set the background colour
-  display.setDefault("background", 234/255, 226/255, 226/255)  
+  -- Insert the background image
+    local bkg_image = display.newImageRect("PhotoShop/level1.png", display.contentWidth, display.contentHeight)
+    bkg_image.x = display.contentWidth / 2 
+    bkg_image.y = display.contentHeight / 2
 
-  -- creating the monkey 
-  monkey = display.newImage( "Images/monkey.png", 0, 0)
-  -- setting Position 
-  monkey.x = display.contentCentreX
-  monkey.y = display.contentCentreY
+    -- Insert background image into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( bkg_image )     
 
-  monkey:scale (.5, .5)
-  monkey.isVisible = true 
-  -- add local text to display the score 
-  scoreObject = display.newText("score " .. score , 512, 100, nil, 40)
-  scoreObject:setTextColor(0, 0, 0)  
+    -- creating the tigger 
+    tigger = display.newImage( "Images/tigger.png", 0, 0)
+    -- setting Position 
+    --tigger.x = display.contentCentreX
+    --tigger.y = display.contentCentreY
+    tigger.x = 1790
+    tigger.y = 512
+
+    tigger:scale (.5, .5)
+    tigger.isVisible = true 
+    -- add local text to display the score 
+    scoreObject = display.newText("score " .. score , 512, 100, nil, 40)
+    scoreObject:setTextColor(0, 0, 0)  
 
 end --function scene:create( event )
 
@@ -132,7 +159,8 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
         GameStart()
-        monkey:addEventListener("touch", Whacked )
+        tigger:addEventListener("touch", Whacked )
+        
     end
 
 end --function scene:show( event )
@@ -157,6 +185,7 @@ function scene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
+        
     end
 
 end --function scene:hide( event )
