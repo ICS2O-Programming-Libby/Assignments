@@ -31,59 +31,125 @@ local scene = composer.newScene( sceneName )
 -- The local variables for this scene
 local bkg_image
 local tigger
+local giraffe
 local score = 0
 
 local varDirection
 local start_x
+local pickAnimal
 scrollspeed = 6
 
 -----------------------------------------------------------------------------------------
 -- FUNCTIONS
 -----------------------------------------------------------------------------------------
 
+--[[local function PopUpMonkey()
+    -- make a monkey apear when the user reaches 20 points 
+    if (score == 20) then
+      monkey.isVisible = true  
+    end    
+end
 
--- this function makes the tigger appear in a random (x, y) position on the screen 
--- before calling the hide function 
+local function Question( event )
+    -- when the user touches a monkey a question screen will apear
+    if (event.phase == "began") then 
+        composer.gotoScene( "monkeyQuestion" )
+    end
+end
+-- ]]
+
+local function RunAwayGiraffe()
+    giraffe.x = giraffe.x - scrollspeed
+end
+
+local function RunAway()
+    tigger.x = tigger.x + scrollspeed
+end
+
+-- this function makes the tigger appear in a random (x, y) position on the screen
+-- before calling the hide function
 local function PopUp()
 
-    -- choosing random position on the screen beween 0 and the size of the screen 
+    -- choosing random position on the screen beween 0 and the size of the screen
     tigger.x = math.random(0, display.contentWidth )
-    tigger.y = 512 
+    tigger.y = 550
 
-    -- make the tigger visible 
-    tigger.isVisible = true 
-    -- make the tigger move
-    --tigger.x = tigger.x + scrollspeed
-    --timer.performWithDelay(1500, GoAway)
-    timer.performWithDelay(100, RunAway)
-end 
+    -- make the tigger visible
+    tigger.isVisible = true
+
+    -- set tigger's varDirection
+    if (tigger.x > display.contentWidth/2) then
+        scrollspeed = -6
+    else
+        scrollspeed = 6
+    end
+
+    -- make the tigger run away
+    Runtime:addEventListener("enterFrame", RunAway)
+    timer.performWithDelay(2000, GoAway)
+end
+
+-- this function makes the tigger appear in a random (x, y) position on the screen
+-- before calling the hide function
+local function PopUpGiraffe()
+    print 'PopUpGiraffe called'
+    -- choosing random position on the screen beween 0 and the size of the screen
+    giraffe.x = math.random(0, display.contentWidth)
+    giraffe.y = 550
+
+    -- make the giraffe visible
+    giraffe.isVisible = true
+
+    -- set giraffe's varDirection
+    if (giraffe.x > display.contentWidth/2) then
+        scrollspeed = -6
+    else
+        scrollspeed = 6
+    end
+
+    -- make the tigger run away
+    Runtime:addEventListener("enterFrame", RunAwayGiraffe)
+    timer.performWithDelay(2000, GoAway)
+end
 
 -- this function calls the PopuP function after 3 seconds
-function PopUpDelay()
-    timer.performWithDelay(3000, PopUp)
-end
-
--- this function makes the tigger invisible and then calls the PopUPDelay function 
-function GoAway()
-    -- change visibility 
-    tigger.isVisible = false 
-    -- CALL THE POPUPDELAY FUNCTION.
-    --PopUpDelay()
-end
-
--- this function makes the tigger
-function RunAway()
-    -- change visibility 
-    varDirection = math.random(1,2)
-    if varDirection == 1 then
-        tigger.x = tigger.x - scrollspeed * 25
-    else
-        tigger.x = tigger.x + scrollspeed * 10
+local function PopUpDelay()
+    pickAnimal = math.random(1,2)
+    if pickAnimal == 1 then
+        timer.performWithDelay(1000, PopUp) 
+        print 'Pick : tigger'
+    elseif pickAnimal == 2 then
+        timer.performWithDelay(1000, PopUpGiraffe)
+        print 'Pick : giraffe'
     end
-    --tigger.isVisible = false 
+    -- PopUpMonkey()
+end
+
+-- this function makes the tigger invisible and then calls the PopUPDelay function
+function GoAway()
+    -- change visibility
+    tigger.isVisible = false
+    giraffe.isVisible = false 
+    -- remove the listener
+    Runtime:removeEventListener("enterFrame", RunAway)
+    Runtime:removeEventListener("enterFrame", RunAwayGiraffe)
     -- CALL THE POPUPDELAY FUNCTION.
-    timer.performWithDelay(500, GoAway)
-    timer.performWithDelay(500, PopUpDelay)
+    PopUpDelay()
+end
+
+
+-- this funtion increments the score only if the tigger is clicked. It then displays the new score 
+function Whacked ( event )
+    -- if touched  phase just started 
+    if (event.phase == "began") then
+        -- INCREASE SCORE BY 1.
+        score = score + 5
+        if (score >= 20) then 
+            composer.gotoScene( "youWin")
+        end
+        -- THEN DISPLAY THE SCORE IN THE TEXT OBJECT.
+        scoreObject.text = "score = " .. score  
+    end 
 end
 
 -- this function starts the game 
@@ -91,16 +157,6 @@ function GameStart()
     PopUpDelay()
 end
 
--- this funtion increments the score only if the tigger is clicked. It then displays the new score 
-function Whacked ( event )
-    -- if touched  phase just started 
-    if (event.phase == "began") then
-        -- INCREASE SCORE BY 1.
-        score = score + 1
-        -- THEN DISPLAY THE SCORE IN THE TEXT OBJECT.
-        scoreObject.text = "score = " .. score  
-    end 
-end
 -----------------------------------------------------------------------------------------
 -- GLOBAL SCENE FUNCTIONS
 -----------------------------------------------------------------------------------------
@@ -119,7 +175,21 @@ function scene:create( event )
     bkg_image.y = display.contentHeight / 2
 
     -- Insert background image into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( bkg_image )     
+    sceneGroup:insert( bkg_image ) 
+
+    monkey = display.newImage("Images/monkey1.png", 0, 0)    
+    monkey.x = 750
+    monkey.y = 300
+    monkey:scale (.4, .4)
+    monkey.isVisible = false 
+    sceneGroup:insert( monkey )
+
+    giraffe = display.newImage("Images/giraffe.png", 0, 0)    
+    giraffe.x = 1890
+    giraffe.y = 490
+    -- giraffe:scale (.4, .4)
+    giraffe.isVisible = false   
+    sceneGroup:insert( giraffe )
 
     -- creating the tigger 
     tigger = display.newImage( "Images/tigger.png", 0, 0)
@@ -127,13 +197,15 @@ function scene:create( event )
     --tigger.x = display.contentCentreX
     --tigger.y = display.contentCentreY
     tigger.x = 1790
-    tigger.y = 512
+    tigger.y = 550
 
     tigger:scale (.5, .5)
     tigger.isVisible = true 
+    sceneGroup:insert( tigger )
     -- add local text to display the score 
     scoreObject = display.newText("score " .. score , 512, 100, nil, 40)
     scoreObject:setTextColor(0, 0, 0)  
+    sceneGroup:insert( scoreObject )
 
 end --function scene:create( event )
 
@@ -160,7 +232,7 @@ function scene:show( event )
         -- Example: start timers, begin animation, play audio, etc.
         GameStart()
         tigger:addEventListener("touch", Whacked )
-        
+        -- tigger:addEventListener("touch", Question )
     end
 
 end --function scene:show( event )

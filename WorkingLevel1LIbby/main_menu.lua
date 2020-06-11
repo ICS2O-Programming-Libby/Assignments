@@ -156,28 +156,11 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image and set it to the center of the screen
-    local bkg_image = display.newImage("PhotoShop/Main_Menu.png")
+    local bkg_image = display.newImage("PhotoShop/Main-Menu.png")
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
     bkg_image.height = display.contentHeight
-
-    -- insert the heads to the animals 
-    local gHead = display.newImage("Images/gHead.png", 200, 200)
-    gHead.x = 285
-    gHead.y = 175
-
-    local zHead = display.newImage("Images/zHead.png", 50, 50)
-    zHead.x = 450
-    zHead.y = 282.5
-    zHead.width = 210
-    zHead.height = 210
-
-    local lHead = display.newImage("Images/lHead.png", 200, 200)
-    lHead.x = 750
-    lHead.y = 290
-    lHead.width = 300
-    lHead.height = 300
 
     muteButton = display.newImageRect("Images/mute.png", 70, 70)
     muteButton.x = 50
@@ -192,9 +175,6 @@ function scene:create( event )
 
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg_image )
-    sceneGroup:insert( gHead )
-    sceneGroup:insert( zHead )
-    sceneGroup:insert( lHead )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
