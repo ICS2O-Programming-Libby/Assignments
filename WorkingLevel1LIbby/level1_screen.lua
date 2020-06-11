@@ -39,24 +39,21 @@ local start_x
 local pickAnimal
 scrollspeed = 6
 
+local heart1
+local heart2
+local heart3 
+local numLives = 3
+
 -----------------------------------------------------------------------------------------
 -- FUNCTIONS
 -----------------------------------------------------------------------------------------
 
---[[local function PopUpMonkey()
-    -- make a monkey apear when the user reaches 20 points 
-    if (score == 20) then
-      monkey.isVisible = true  
-    end    
+local function MakeHeartsVisible()
+    print 'Hearts should be visible now'
+    heart1.isVisible = true
+    heart2.isVisible = true
+    heart3.isVisible = true 
 end
-
-local function Question( event )
-    -- when the user touches a monkey a question screen will apear
-    if (event.phase == "began") then 
-        composer.gotoScene( "monkeyQuestion" )
-    end
-end
--- ]]
 
 local function RunAwayGiraffe()
     giraffe.x = giraffe.x - scrollspeed
@@ -139,17 +136,39 @@ end
 
 
 -- this funtion increments the score only if the tigger is clicked. It then displays the new score 
-function Whacked ( event )
+function WhackedTigger ( event )
     -- if touched  phase just started 
     if (event.phase == "began") then
         -- INCREASE SCORE BY 1.
         score = score + 5
         if (score >= 20) then 
+            -- set the score bakc to zero 
+            score = 0
             composer.gotoScene( "youWin")
         end
         -- THEN DISPLAY THE SCORE IN THE TEXT OBJECT.
         scoreObject.text = "score = " .. score  
-    end 
+    else
+        numLives = numLives - 1
+        if (numLives == 2) then 
+            -- update lives 
+            heart1.isVisible = true 
+            heart2.isVisible = true
+            heart3.isvisible = false 
+        elseif (numLives == 1) then 
+            -- update lives 
+            heart1.isVisible = true 
+            heart2.isVisible = false 
+            heart3.isvisible = false
+        else --(numLives == 0) 
+            -- update lives 
+            heart1.isVisible = false  
+            heart2.isVisible = false 
+            heart3.isvisible = false
+            composer.gotoScene("youLose")
+        end 
+
+    end
 end
 
 -- this function starts the game 
@@ -174,15 +193,32 @@ function scene:create( event )
     bkg_image.x = display.contentWidth / 2 
     bkg_image.y = display.contentHeight / 2
 
+    -- Insert the Hearts
+    heart1 = display.newImageRect("Images/medicine.png", 80, 80)
+    heart1.x = 50
+    heart1.y = 50
+    heart1.isVisible = true
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( heart1 )
+
+    heart2 = display.newImageRect("Images/medicine.png", 80, 80)
+    heart2.x = 100
+    heart2.y = display.contentHeight /16
+    heart2.isVisible = true
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( heart2 )
+
+    heart3 = display.newImageRect("Images/medicine.png", 80, 80)
+    heart3.x = 150
+    heart3.y = display.contentHeight /16
+    heart3.isVisible = true
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( heart3 )
+
     -- Insert background image into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( bkg_image ) 
-
-    monkey = display.newImage("Images/monkey1.png", 0, 0)    
-    monkey.x = 750
-    monkey.y = 300
-    monkey:scale (.4, .4)
-    monkey.isVisible = false 
-    sceneGroup:insert( monkey )
 
     giraffe = display.newImage("Images/giraffe.png", 0, 0)    
     giraffe.x = 1890
@@ -231,8 +267,12 @@ function scene:show( event )
         -- Insert code here to make the scene come alive.
         -- Example: start timers, begin animation, play audio, etc.
         GameStart()
-        tigger:addEventListener("touch", Whacked )
+        tigger:addEventListener("touch", WhackedTigger )
+        giraffe:addEventListener("touch", WhackedTigger )
         -- tigger:addEventListener("touch", Question )
+
+        -- make all lives visible
+        MakeHeartsVisible()
     end
 
 end --function scene:show( event )
