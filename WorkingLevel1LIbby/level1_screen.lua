@@ -222,8 +222,8 @@ function WhackedTigger ( event )
         if (score >= 20) then 
             -- set the score bakc to zero 
             score = 0
-            composer.gotoScene( "youWin")
             winnerSoundChannel = audio.play(winnerSound)
+            composer.gotoScene( "youWin")
         end
         -- THEN DISPLAY THE SCORE IN THE TEXT OBJECT.
         scoreObject.text = "score = " .. score  

@@ -25,6 +25,12 @@ sceneName = "level2_screen"
 local level2Music = audio.loadSound("Sounds/level2.mp3")
 local level2MusicChannel
 
+local failSound = audio.loadSound("Sounds/fail.mp3")
+local failSoundChannel
+
+local winnerSound = audio.loadSound("Sounds/winner.mp3")
+local winnerSoundChannel
+
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
 -----------------------------------------------------------------------------------------
@@ -54,7 +60,7 @@ local uArrow
 local lArrow
 
 -- variables for the timer
-local totalSeconds = 5
+local totalSeconds = 31
 local secondsLeft = 31
 local clockText
 local countDownTimer
@@ -73,40 +79,67 @@ local GRAVITY = -2
 -- LOCAL SCENE FUNCTIONS
 ----------------------------------------------------------------------------------------- 
 
+--  MOVE THE CAR WHEN THE TIMER RUNS OUT 
+
+local scrollspeed = 3
+
+--[[local function MoveCar( event )
+    -- make the car move one the timer runs out 
+    car.x = car.x + scrollspeed 
+end]]
+-----------------------------------------------------------------------------------------
+
 -- TIMER FUNCTIONS 
 
---[[local function UpdateTime()
+local function UpdateTime()
     -- decrement the number of seconds 
     secondsLeft = secondsLeft - 1
     print ("secondsLeft : " .. secondsLeft)
     -- display the number of seconds left in the clock object 
     clockText.text = secondsLeft .. ""
 
+   -- if(secondsLeft == 2) then 
+        --MoveCar()
+
     if (secondsLeft == 0) then 
        -- rest the number of seconds left 
-       secondsLeft = totalSeconds
-       lives = lives - 1 
-        if (lives == 0) then 
-            print ("lives = " .. lives)
+       --secondsLeft = totalSeconds
+        if (secondsLeft == 0) then 
+            print ("timer is out " )
             timer.performWithDelay(500)
-            composer.gotoScene()
-            --cancel timer
+            level2MusicChannel = audio.pause(level2Music)
+            failSoundChannel = audio.play(failSound)
             timer.cancel(countDownTimer)
             clockText.isVisible = false
-            correctObject.isVisible = false
+            composer.gotoScene( "you_lose" )
+
         end 
-       --cancel timer
+       -- cancel timer
        timer.cancel(countDownTimer)
 
      -- *****CALLL THE FUNCTION TO ASK A NEW QUESTION*****
-     --AskQuestion()
-     secondsLeft = 31 
-     countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
-end]]
+     -- AskQuestion()
+     -- secondsLeft = 31 
+     -- countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
+    end 
+end
+
+-- function that calls the timer 
+local function StartTimer()
+    -- create a countdown timer that loops infinitely
+    if (lives > 0) then
+        secondsLeft = 11
+        countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
+        print ("Start timer.")
+    else
+        timer.cancel(countDownTimer)
+    end
+
+end
 
 -----------------------------------------------------------------------------------------
 
---  LEVEL TRANSTIONS 
+-- LEVEL TRANSTIONS 
 
 local function YouLoseTransition()
     composer.gotoScene( "youLose" )
@@ -126,6 +159,7 @@ local function right (touch)
     if player.x >= 900 and (player.y <= 400 and player.y >= 350) then
         
         composer.gotoScene( "youwin" )
+        winnerSoundChannel = audio.pause(winnerSound)
         --YouWinTransition()
     end
 end
@@ -235,8 +269,6 @@ local function AddPhysicsBodies()
     physics.addBody( wall9, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall10, "static", { density= 0, friction= 0, bounce= 0 } )
     --physics.addBody( wall11, "static", { density= 0, friction= 0, bounce= 0 } )
-    -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER 
-    -- physics.addBody( ... , "static",  {density= 0, friction= 0, bounce= 0 } )
     physics.addBody(car, "static", {density= 0, friction= 0, bounce= 0 })
 end
 
@@ -254,7 +286,7 @@ local function RemovePhysicsBodies()
     physics.removeBody(wall10)
     --physics.removeBody(wall11)
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE UESR 
-    -- physics.removeBody( ... )
+    physics.removeBody( player )
     physics.removeBody(car)
 end
 -----------------------------------------------------------------------------------------
@@ -270,55 +302,15 @@ local function AddCollisionListeners()
 	-- adds all of the colision listners of everything called in this function 
 	car.collision = onCollision
     car:addEventListener( "collision" )
-    -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER 
-    -- ... .collision = onCollision
-    -- ... :addEventListener( "collision" )
-    --[[
-    wall1.collision = onCollision
-    wall1:addEventListener( "collision" )
-    wall2.collision = onCollision
-    wall2:addEventListener( "collision" )	
-    --]]
-    wall3.collision = onCollision
-    wall3:addEventListener( "collision" )
-   --[[  wall4.collision = onCollision
-    wall4:addEventListener( "collision" )
-    wall5.collision = onCollision
-    wall5:addEventListener( "collision" )
-    wall6.collision = onCollision
-    wall6:addEventListener( "collision" )
-    wall7.collision = onCollision
-    wall7:addEventListener( "collision" )
-    wall8.collision = onCollision
-    wall8:addEventListener( "collision" )
-    wall9.collision = onCollision
-    wall9:addEventListener( "collision" )
-    wall10.collision = onCollision
-    wall10:addEventListener( "collision" )
-    wall11.collision = onCollision
-    wall11:addEventListener( "collision" )
-    --]]
+    player.collision = onCollision
+    player:addEventListener("collision")   
 end
 
 local function RemoveCollisionListeners()
 	-- rempves all of the colision listners of everything called in this function 
     car:removeEventListener( "collision" )
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER
-    -- ... :removeEventListener( "collision" )
-    --[[
-    wall1:removeEventListener( "collision" )
-    wall2:removeEventListener( "collision" )
-    --]]
-    wall3:removeEventListener( "collision" )
-    --[[wall4:removeEventListener( "collision" )
-    wall5:removeEventListener( "collision" )
-    wall6:removeEventListener( "collision" )
-    wall7:removeEventListener( "collision" )
-    wall8:removeEventListener( "collision" )
-    wall9:removeEventListener( "collision" )
-    wall10:removeEventListener( "collision" )
-    wall11:removeEventListener( "collision" )
-    --]]
+    player:removeEventListener( "collision" )
 end
 -----------------------------------------------------------------------------------------
 
@@ -456,7 +448,7 @@ function scene:create( event )
     lArrow.y = 710
    
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert(lArrow)
+    sceneGroup:insert(lArrow )
 
     --Insert the left arrow
     uArrow = display.newImageRect("Images/uArrow.png", 25, 50)
@@ -464,7 +456,7 @@ function scene:create( event )
     uArrow.y = 680
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( uArrow)
+    sceneGroup:insert( uArrow )
 
     --ADDDED THIS -- IMAGE DOES NOT EXIST YET 
     --Insert the down arrow
@@ -473,7 +465,15 @@ function scene:create( event )
     dArrow.y = 740
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( dArrow)
+    sceneGroup:insert( dArrow )
+
+    -- display the clock text, showing the number countdown 
+    clockText = display.newText("Start", 150, 50, native.systemFontBold, 80)
+    clockText:setFillColor(0, 0, 0)
+    clockText.isVisible = true
+
+    -- Insert objects into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( clockText )
 
 end --function scene:create( event )
 
@@ -503,6 +503,10 @@ function scene:show( event )
         -- create the character, add physics bodies and runtime listeners
         Replaceplayer()
 
+        -- start the timer 
+        StartTimer()
+
+        -- play the level music 
         level2MusicChannel = audio.play(level2Music, {loops = -1})
     end
 
