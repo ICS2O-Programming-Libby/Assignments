@@ -197,6 +197,7 @@ local function Replaceplayer()
     player = display.newImageRect("Images/player.png", 100, 150)
     player.x = display.contentWidth * 0.5 / 8
     player.y = 400
+    player.isVisible = true 
     -- player.width = 100
     -- player.height = 150
     player.myName = "Girl1"
@@ -272,13 +273,15 @@ local function AddCollisionListeners()
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER 
     -- ... .collision = onCollision
     -- ... :addEventListener( "collision" )
+    --[[
     wall1.collision = onCollision
     wall1:addEventListener( "collision" )
-   --[[ wall2.collision = onCollision
+    wall2.collision = onCollision
     wall2:addEventListener( "collision" )	
+    --]]
     wall3.collision = onCollision
     wall3:addEventListener( "collision" )
-    wall4.collision = onCollision
+   --[[  wall4.collision = onCollision
     wall4:addEventListener( "collision" )
     wall5.collision = onCollision
     wall5:addEventListener( "collision" )
@@ -302,11 +305,12 @@ local function RemoveCollisionListeners()
     car:removeEventListener( "collision" )
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER
     -- ... :removeEventListener( "collision" )
-    wall1:removeEventListener( "collision" )
     --[[
+    wall1:removeEventListener( "collision" )
     wall2:removeEventListener( "collision" )
+    --]]
     wall3:removeEventListener( "collision" )
-    wall4:removeEventListener( "collision" )
+    --[[wall4:removeEventListener( "collision" )
     wall5:removeEventListener( "collision" )
     wall6:removeEventListener( "collision" )
     wall7:removeEventListener( "collision" )
@@ -531,6 +535,7 @@ function scene:hide( event )
         --RemoveArrowEventListeners()
         --RemoveRuntimeListeners()
         --display.remove(player)
+        player.isVisible = false 
     end
 
 end --function scene:hide( event )

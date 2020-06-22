@@ -63,7 +63,7 @@ function scene:create( event )
     local sceneGroup = self.view
 
     -- Display background
-    bkg = display.newImage("PhotoShop/YouWin.png")
+    bkg = display.newImage("PhotoShop/YouLose.png")
     bkg.x = display.contentCenterX
     bkg.y = display.contentCenterY
     bkg.width = display.contentWidth

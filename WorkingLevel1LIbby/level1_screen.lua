@@ -1,5 +1,4 @@
 -----------------------------------------------------------------------------------------
---
 -- level1_screen.lua
 -- Created by: Your Name
 -- Date: Month Day, Year
@@ -49,7 +48,7 @@ local score = 0
 local varDirection
 local start_x
 local pickAnimal
-scrollspeed = 6
+scrollspeed = 2
 
 local heart1
 local heart2
@@ -61,15 +60,15 @@ local numLives = 3
 -----------------------------------------------------------------------------------------
 
 local function RunAwayGiraffe()
-    giraffe.x = giraffe.x - scrollspeed
+    giraffe.x = giraffe.x - scrollspeed * 0.7
 end
 
 local function RunAway()
-    tigger.x = tigger.x + scrollspeed
+    tigger.x = tigger.x + scrollspeed * 0.7
 end
 
 local function RunAwayMonkey()
-    monkey.x = monkey.x - scrollspeed
+    monkey.x = monkey.x - scrollspeed * 0.7
 end
 
 -- this function makes the tigger appear in a random (x, y) position on the screen
@@ -202,8 +201,9 @@ function WhackedMonkey ( event )
             heart2.isVisible = false 
             heart3.isvisible = false
             failSoundChannel = audio.play(failSound)
+            level1MusicChannel = audio.play(level1Music)
             --composer.gotoScene("youLose")
-            composer.gotoScene( "youWin2")
+            composer.gotoScene( "you_lose")
             -- composer.gotoScene( "youLose" )
         end 
 

@@ -53,7 +53,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Insert the background image and set it to the center of the screen
-    bkg_image = display.newImageRect("PhotoShop/instructionsScreen.png", display.contentWidth, display.contentHeight)
+    bkg_image = display.newImageRect("PhotoShop/Instructions.png", display.contentWidth, display.contentHeight)
     bkg_image.x = display.contentCenterX
     bkg_image.y = display.contentCenterY
     bkg_image.width = display.contentWidth
@@ -74,7 +74,7 @@ function scene:create( event )
     {
         -- Setting Position
         x = display.contentWidth/2,
-        y = display.contentHeight*3.8/5,
+        y = display.contentHeight*4.7/5,
 
         -- Setting Dimensions
         -- width = 1000,

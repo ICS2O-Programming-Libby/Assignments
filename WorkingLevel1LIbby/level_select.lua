@@ -78,7 +78,7 @@ function scene:create( event )
             -- MAKE THE LENGTH 200 AND THE WIDTH 100
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight*3/8,
+            y = display.contentHeight*4/8,
             --x = 512,
             --y = 300, 
 
@@ -98,7 +98,7 @@ function scene:create( event )
             -- MAKE THE LENGTH 200 AND THE WIDTH 100
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
-            y = display.contentHeight*4/8,
+            y = display.contentHeight*3/8,
 
 
             -- Insert the images here
