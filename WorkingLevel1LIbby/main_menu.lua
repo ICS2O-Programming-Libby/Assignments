@@ -41,6 +41,7 @@ local scene = composer.newScene( sceneName )
 local playButton
 local creditsButton
 local instructionsButton
+local levelSelectButton
 
 soundOn = true 
 
@@ -126,12 +127,14 @@ end
 -- Creating Transition Function to Credits Page
 local function CreditsTransition( )       
     composer.gotoScene( "credits_screen", transitionOptions_ZoomOutInFade)
+    musicSoundChannel = audio.pause(music)
 end 
 -----------------------------------------------------------------------------------------
 
 -- Creating Transition Function to Instructions Page
 local function InstructionsTransition( )       
     composer.gotoScene( "instructions", transitionOptions_ZoomOutInFadeRotate )
+    musicSoundChannel = audio.pause(music)
 end 
 
 -----------------------------------------------------------------------------------------
@@ -139,6 +142,14 @@ end
 -- Creating Transition to Level1 Screen
 local function Level1ScreenTransition( )
     composer.gotoScene( "level1_screen", transitionOptions_ZoomInOutFade)
+    musicSoundChannel = audio.pause(music)
+end  
+-----------------------------------------------------------------------------------------
+
+-- Creating Transition to Level1 Screen
+local function LevelSelectTransition( )
+    composer.gotoScene( "level_select", transitionOptions_ZoomInOutFade)
+    musicSoundChannel = audio.pause(music)
 end    
 
 -----------------------------------------------------------------------------------------
@@ -175,6 +186,8 @@ function scene:create( event )
 
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg_image )
+    sceneGroup:insert( unmuteButton )
+    sceneGroup:insert( muteButton )
 
     -- Send the background image to the back layer so all other objects can be on top
     bkg_image:toBack()
@@ -184,18 +197,18 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------   
 
     -- Creating Play Button
-    playButton = widget.newButton( 
+    levelSelectButton = widget.newButton( 
         {   
             -- Set its position on the screen relative to the screen size
             x = display.contentWidth/2,
             y = display.contentHeight*7/8,            
 
             -- Insert the images here
-            defaultFile = "Images/buttonPlay.png",
-            overFile = "Images/buttonPlayPressed.png", 
+            defaultFile = "Images/buttonPlay.png",  200, 200,
+            overFile = "Images/buttonPlayPressed.png",  200, 200,
 
             -- When the button is released, call the Level1 screen transition function
-            onRelease = Level1ScreenTransition          
+            onRelease = LevelSelectTransition          
         } )
 
     -----------------------------------------------------------------------------------------
@@ -240,7 +253,7 @@ function scene:create( event )
     -----------------------------------------------------------------------------------------
 
     -- Associating button widgets with this scene
-    sceneGroup:insert( playButton )
+    sceneGroup:insert( levelSelectButton )
     sceneGroup:insert( creditsButton )
     sceneGroup:insert( instructionsButton )
  -- function scene:create( event )      
@@ -288,7 +301,7 @@ function scene:show( event )
     musicSoundChannel = audio.pause(music)
     unmuteButton:addEventListener("touch", Unmute)  
     muteButton:addEventListener("touch", Mute)
-  
+    
         
     -- make the background music
     -- musicSoundChannel = audio.play(music)  

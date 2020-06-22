@@ -1,4 +1,4 @@
-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 -- level2_screen.lua
 -- Created by: LIbby Valentino
 -- Date: Jun. 11th, 2020
@@ -32,38 +32,20 @@ local bkgImage
 
 local wall1
 local wall2
-local wall3
-local wall4
-local wall5
-local wall6 
-local wall7
-local wall8 
-local wall9 
-local wall10
-local wall11
-
 
 local heart1
 local heart2
 local heart3
 local numLives = 3
-local lives = 1
 
 local rArrow 
 local uArrow
 local lArrow
 
--- variables for the timer
-local totalSeconds = 5
-local secondsLeft = 31
-local clockText
-local countDownTimer
-
 local muteButton 
 local unmuteButton 
 
 local motionx = 0
-local motiony = 0
 local SPEED = 7
 -- NOT SURE I NEED THESE SO IM TEMPORARILY COMMENTING OUT 
 local LINEAR_VELOCITY = -150
@@ -73,60 +55,19 @@ local GRAVITY = -2
 -- LOCAL SCENE FUNCTIONS
 ----------------------------------------------------------------------------------------- 
 
--- TIMER FUNCTIONS 
-
---[[local function UpdateTime()
-    -- decrement the number of seconds 
-    secondsLeft = secondsLeft - 1
-    print ("secondsLeft : " .. secondsLeft)
-    -- display the number of seconds left in the clock object 
-    clockText.text = secondsLeft .. ""
-
-    if (secondsLeft == 0) then 
-       -- rest the number of seconds left 
-       secondsLeft = totalSeconds
-       lives = lives - 1 
-        if (lives == 0) then 
-            print ("lives = " .. lives)
-            timer.performWithDelay(500)
-            composer.gotoScene()
-            --cancel timer
-            timer.cancel(countDownTimer)
-            clockText.isVisible = false
-            correctObject.isVisible = false
-        end 
-       --cancel timer
-       timer.cancel(countDownTimer)
-
-     -- *****CALLL THE FUNCTION TO ASK A NEW QUESTION*****
-     --AskQuestion()
-     secondsLeft = 31 
-     countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
-end]]
-
------------------------------------------------------------------------------------------
-
---  LEVEL TRANSTIONS 
-
-local function YouLoseTransition()
-    composer.gotoScene( "youLose" )
-end
-
-local function YouWinTransition()
-    composer.gotoScene( "youwin" )
-end
-
 -- ARROW FUNCTIONS 
 
 -- When right arrow is touched, move player right
 local function right (touch)
     motionx = SPEED
     player.xScale = 1
+end
 
-    if player.x >= 900 and (player.y <= 400 and player.y >= 350) then
-        
-        composer.gotoScene( "youwin" )
-        --YouWinTransition()
+-- When up arrow is touched, add vertical so it can jump
+local function up (touch)
+    if (player ~= nil) then
+        player:setLinearVelocity( 0, LINEAR_VELOCITY )
+        --player:setLinearVelocity( 0, 7 )
     end
 end
 
@@ -137,32 +78,15 @@ local function left (touch)
     
 end
 
-
--- When up arrow is touched, add vertical so it can jump
-local function down (touch)
-    motiony = SPEED 
-    player.yScale = 1
-end
-
-
--- When up arrow is touched, add vertical so it can jump
-local function up (touch)
-    motiony = -SPEED 
-    player.yScale = 1
-end
-
-
 -- Move player horizontally
 local function movePlayer (event)
     player.x = player.x + motionx
-    player.y = player.y + motiony
 end
  
 -- Stop player movement when no arrow is pushed
 local function stop (event)
     if (event.phase =="ended") then
         motionx = 0
-        motiony = 0
     end
 end
 
@@ -170,15 +94,12 @@ local function AddArrowEventListeners()
     rArrow:addEventListener("touch", right)
     uArrow:addEventListener("touch", up)
     lArrow:addEventListener("touch", left)
-    dArrow:addEventListener("touch", down)  
- 
 end
 
 local function RemoveArrowEventListeners()
     rArrow:removeEventListener("touch", right)
     uArrow:removeEventListener("touch", up)
     lArrow:removeEventListener("touch", left)
-    dArrow:removeEventListener("touch", down)
 end
 
 local function AddRuntimeListeners()
@@ -225,15 +146,6 @@ local function AddPhysicsBodies()
     --adds the physics bodies to all of the objects called in this function 
     physics.addBody( wall1, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall2, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall3, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall4, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall5, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall6, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall7, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall8, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall9, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall10, "static", { density= 0, friction= 0, bounce= 0 } )
-    --physics.addBody( wall11, "static", { density= 0, friction= 0, bounce= 0 } )
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER 
     -- physics.addBody( ... , "static",  {density= 0, friction= 0, bounce= 0 } )
     physics.addBody(car, "static", {density= 0, friction= 0, bounce= 0 })
@@ -243,15 +155,6 @@ local function RemovePhysicsBodies()
 	-- takes away the physics bodies of all objects called in this function 
 	physics.removeBody(wall1)
     physics.removeBody(wall2)
-    physics.removeBody(wall3)
-    physics.removeBody(wall4)
-    physics.removeBody(wall5)
-    physics.removeBody(wall6)
-    physics.removeBody(wall7)
-    physics.removeBody(wall8)
-    physics.removeBody(wall9)
-    physics.removeBody(wall10)
-    --physics.removeBody(wall11)
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE UESR 
     -- physics.removeBody( ... )
     physics.removeBody(car)
@@ -274,27 +177,8 @@ local function AddCollisionListeners()
     -- ... :addEventListener( "collision" )
     wall1.collision = onCollision
     wall1:addEventListener( "collision" )
-   --[[ wall2.collision = onCollision
+    wall2.collision = onCollision
     wall2:addEventListener( "collision" )	
-    wall3.collision = onCollision
-    wall3:addEventListener( "collision" )
-    wall4.collision = onCollision
-    wall4:addEventListener( "collision" )
-    wall5.collision = onCollision
-    wall5:addEventListener( "collision" )
-    wall6.collision = onCollision
-    wall6:addEventListener( "collision" )
-    wall7.collision = onCollision
-    wall7:addEventListener( "collision" )
-    wall8.collision = onCollision
-    wall8:addEventListener( "collision" )
-    wall9.collision = onCollision
-    wall9:addEventListener( "collision" )
-    wall10.collision = onCollision
-    wall10:addEventListener( "collision" )
-    wall11.collision = onCollision
-    wall11:addEventListener( "collision" )
-    --]]
 end
 
 local function RemoveCollisionListeners()
@@ -303,21 +187,19 @@ local function RemoveCollisionListeners()
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE USER
     -- ... :removeEventListener( "collision" )
     wall1:removeEventListener( "collision" )
-    --[[
     wall2:removeEventListener( "collision" )
-    wall3:removeEventListener( "collision" )
-    wall4:removeEventListener( "collision" )
-    wall5:removeEventListener( "collision" )
-    wall6:removeEventListener( "collision" )
-    wall7:removeEventListener( "collision" )
-    wall8:removeEventListener( "collision" )
-    wall9:removeEventListener( "collision" )
-    wall10:removeEventListener( "collision" )
-    wall11:removeEventListener( "collision" )
-    --]]
 end
 -----------------------------------------------------------------------------------------
 
+--  LEVEL TRANSTIONS 
+
+local function YouLoseTransition()
+    composer.gotoScene( "youLose" )
+end
+
+local function YouWinTransition()
+    composer.gotoScene( "youwin" )
+end
 -----------------------------------------------------------------------------------------
 
 --  SOUND FUNCTIONS
@@ -375,62 +257,17 @@ function scene:create( event )
     sceneGroup:insert( bkgImage )
 
     -- create the maze walls 
-    wall1 = display.newImageRect("Images/woodHorizontal.png", 800, 800)
-    wall1.x = 250
-    wall1.y = 100
+    wall1 = display.newImageRect("Images/woodWall.png", 1000, 800)
+    wall1.x = 512
+    wall1.y = 400
 	
-	wall2 = display.newImageRect("Images/woodHorizontal.png", 800, 800)
-    wall2.x = 720
-    wall2.y = 100
+	wall2 = display.newImageRect("Images/woodWall2.png", 1000, 800)
+    wall2.x = 512
+    wall2.y = 380
 
-    wall3 = display.newImageRect("Images/woodVertical.png", 400, 500)
-    wall3.x = 15
-    wall3.y = 200
-
-    wall4 = display.newImageRect("Images/woodVertical.png", 400, 500)
-    wall4.x = 985
-    wall4.y = 200
-
-    wall5 = display.newImageRect("Images/woodVertical.png", 600, 600)
-    wall5.x = 400
-    wall5.y = 335
-
-    wall6 = display.newImageRect("Images/woodHorizontal.png", 800, 800)
-    wall6.x = 250
-    wall6.y = 775
-
-    wall7 = display.newImageRect("Images/woodHorizontal.png", 800, 800)
-    wall7.x = 720
-    wall7.y = 775
-
-    wall8 = display.newImageRect("Images/woodVertical.png", 400, 400)
-    wall8.x = 15
-    wall8.y = 650
-
-    wall9 = display.newImageRect("Images/woodVertical.png", 400, 400)
-    wall9.x = 985
-    wall9.y = 650
-
-    wall10 = display.newImageRect("Images/woodVertical.png", 600, 600)
-    wall10.x = 650
-    wall10.y = 520
-
-    --wall11 = display.newImageRect("Images/woodHorizontal.png", 300, 300)
-    --wall11.x = 120
-    --wall11.y = 515
-
-    -- insert maze walls  into the scene group in order to ONLY be associated with this scene
+    -- Insert maze walls  into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( wall1 )
     sceneGroup:insert( wall2 )
-    sceneGroup:insert( wall3 )
-    sceneGroup:insert( wall4 )
-    sceneGroup:insert( wall5 )
-    sceneGroup:insert( wall6 )
-    sceneGroup:insert( wall7 )
-    sceneGroup:insert( wall8 )
-    sceneGroup:insert( wall9 )
-    sceneGroup:insert( wall10 )
-    --sceneGroup:insert( wall11 )
 
     -- create the car 
     car = display.newImageRect("Images/car.png", 200, 200)
@@ -439,37 +276,28 @@ function scene:create( event )
     sceneGroup:insert( car )
 
     --Insert the right arrow
-    rArrow = display.newImageRect("Images/rArrow.png", 50, 25)
-    rArrow.x =  900   
-    rArrow.y =  710   
+    rArrow = display.newImageRect("Images/rArrow.png", 75, 50)
+    rArrow.x = display.contentWidth * 8.7 / 10
+    rArrow.y = display.contentHeight * 9.5 / 10
    
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( rArrow)
 
     --Insert the left arrow
-    lArrow = display.newImageRect("Images/lArrow.png", 50, 25)
-    lArrow.x = 800
-    lArrow.y = 710
+    lArrow = display.newImageRect("Images/lArrow.png", 75, 50)
+    lArrow.x = display.contentWidth * 6.7 / 10
+    lArrow.y = display.contentHeight * 9.5 / 10
    
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert(lArrow)
 
     --Insert the left arrow
-    uArrow = display.newImageRect("Images/uArrow.png", 25, 50)
-    uArrow.x = 850
-    uArrow.y = 680
+    uArrow = display.newImageRect("Images/uArrow.png", 50, 75)
+    uArrow.x = display.contentWidth * 7.7 / 10
+    uArrow.y = display.contentHeight * 8.5 / 10
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( uArrow)
-
-    --ADDDED THIS -- IMAGE DOES NOT EXIST YET 
-    --Insert the down arrow
-    dArrow = display.newImageRect("Images/dArrow.png", 25, 50)
-    dArrow.x = 850
-    dArrow.y = 740
-
-    -- Insert objects into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( dArrow)
 
 end --function scene:create( event )
 
@@ -491,14 +319,8 @@ function scene:show( event )
     physics.setGravity( 0, 0 )
 
     elseif ( phase == "did" ) then
-		
-        -- add physics bodies to each object
-        --AddPhysicsBodies()
-        -- add collision listeners to objects
-        --AddCollisionListeners()
-        -- create the character, add physics bodies and runtime listeners
+		-- create the player, add physics bodies and runtime listeners
         Replaceplayer()
-
         level2MusicChannel = audio.play(level2Music, {loops = -1})
     end
 
@@ -523,14 +345,6 @@ function scene:hide( event )
 
     elseif ( phase == "did" ) then
         -- Called immediately after scene goes off screen.
-
-        physics.stop()
-        --RemoveCollisionListeners()
-        RemovePhysicsBodies()
-
-        --RemoveArrowEventListeners()
-        --RemoveRuntimeListeners()
-        --display.remove(player)
     end
 
 end --function scene:hide( event )
@@ -564,3 +378,28 @@ scene:addEventListener( "destroy", scene )
 -----------------------------------------------------------------------------------------
 
 return scene
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

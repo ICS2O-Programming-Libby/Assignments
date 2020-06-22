@@ -23,6 +23,18 @@ sceneName = "level1_screen"
 
 -- Creating Scene Object
 local scene = composer.newScene( sceneName )
+-----------------------------------------------------------------------------------------
+-- LOCAL SOUNDS
+-----------------------------------------------------------------------------------------
+
+local level1Music = audio.loadSound("Sounds/level1.mp3")
+local level1MusicChannel
+
+local failSound = audio.loadSound("Sounds/fail.mp3")
+local failSoundChannel
+
+local winnerSound = audio.loadSound("Sounds/winner.mp3")
+local winnerSoundChannel
 
 -----------------------------------------------------------------------------------------
 -- LOCAL VARIABLES
@@ -48,19 +60,16 @@ local numLives = 3
 -- FUNCTIONS
 -----------------------------------------------------------------------------------------
 
-local function MakeHeartsVisible()
-    print 'Hearts should be visible now'
-    heart1.isVisible = true
-    heart2.isVisible = true
-    heart3.isVisible = true 
-end
-
 local function RunAwayGiraffe()
     giraffe.x = giraffe.x - scrollspeed
 end
 
 local function RunAway()
     tigger.x = tigger.x + scrollspeed
+end
+
+local function RunAwayMonkey()
+    monkey.x = monkey.x - scrollspeed
 end
 
 -- this function makes the tigger appear in a random (x, y) position on the screen
@@ -86,6 +95,15 @@ local function PopUp()
     timer.performWithDelay(2000, GoAway)
 end
 
+
+local function MakeHeartsVisible()
+    print 'Hearts should be visible now'
+    heart1.isVisible = true
+    heart2.isVisible = true
+    heart3.isVisible = true 
+end
+
+
 -- this function makes the tigger appear in a random (x, y) position on the screen
 -- before calling the hide function
 local function PopUpGiraffe()
@@ -109,17 +127,40 @@ local function PopUpGiraffe()
     timer.performWithDelay(2000, GoAway)
 end
 
+local function PopUpMonkey()
+    print 'PopUpGiraffe called'
+    -- choosing random position on the screen beween 0 and the size of the screen
+    monkey.x = math.random(0, display.contentWidth)
+    monkey.y = 550
+
+    -- make the giraffe visible
+    monkey.isVisible = true
+
+    -- set giraffe's varDirection
+    if (monkey.x > display.contentWidth/2) then
+        scrollspeed = -6
+    else
+        scrollspeed = 6
+    end
+
+    -- make the tigger run away
+    Runtime:addEventListener("enterFrame", RunAwayMonkey)
+    timer.performWithDelay(2000, GoAway)
+end
+
 -- this function calls the PopuP function after 3 seconds
 local function PopUpDelay()
-    pickAnimal = math.random(1,2)
+    pickAnimal = math.random(1,3)
     if pickAnimal == 1 then
         timer.performWithDelay(1000, PopUp) 
         print 'Pick : tigger'
     elseif pickAnimal == 2 then
         timer.performWithDelay(1000, PopUpGiraffe)
         print 'Pick : giraffe'
+    elseif pickAnimal == 3 then 
+        timer.performWithDelay(1000, PopUpMonkey)
+        print 'Pick : monkey'
     end
-    -- PopUpMonkey()
 end
 
 -- this function makes the tigger invisible and then calls the PopUPDelay function
@@ -127,29 +168,24 @@ function GoAway()
     -- change visibility
     tigger.isVisible = false
     giraffe.isVisible = false 
+    monkey.isVisible = false
     -- remove the listener
     Runtime:removeEventListener("enterFrame", RunAway)
     Runtime:removeEventListener("enterFrame", RunAwayGiraffe)
+    Runtime:removeEventListener("enterFrame", RunAwayMonkey)
     -- CALL THE POPUPDELAY FUNCTION.
     PopUpDelay()
 end
 
-
--- this funtion increments the score only if the tigger is clicked. It then displays the new score 
-function WhackedTigger ( event )
+-- WHAT I'M TRYING TO DO HERE:
+-- I WANT THE USER TO LOSE A LIFE IF THEY TOUCH THE MONKEY 
+-- I USED TO HAVE THIS CODE IN THE WHACKEDTIGGER BUT MOVED IT TO THE WHACKED MONKEY
+-- IF THE USER REACHES 0 LIVES THEN IT SHOULD GO TO THE YOU LOSE SCREEN
+function WhackedMonkey ( event )
     -- if touched  phase just started 
     if (event.phase == "began") then
         -- INCREASE SCORE BY 1.
-        score = score + 5
-        if (score >= 20) then 
-            -- set the score bakc to zero 
-            score = 0
-            composer.gotoScene( "youWin")
-        end
-        -- THEN DISPLAY THE SCORE IN THE TEXT OBJECT.
-        scoreObject.text = "score = " .. score  
-    else
-        numLives = numLives - 1
+        numLives = numLives - 1 
         if (numLives == 2) then 
             -- update lives 
             heart1.isVisible = true 
@@ -160,14 +196,37 @@ function WhackedTigger ( event )
             heart1.isVisible = true 
             heart2.isVisible = false 
             heart3.isvisible = false
-        else --(numLives == 0) 
+        elseif (numLives == 0) then
             -- update lives 
             heart1.isVisible = false  
             heart2.isVisible = false 
             heart3.isvisible = false
-            composer.gotoScene("youLose")
+            failSoundChannel = audio.play(failSound)
+            --composer.gotoScene("youLose")
+            composer.gotoScene( "youWin2")
+            -- composer.gotoScene( "youLose" )
         end 
 
+    end
+end
+
+-- WHAT I'M TRYING TO DO HERE:
+-- I WANT TH USER TO GAIN 5 POINTS IF THEY TOUCH A TIGGER OR GIRAFFE 
+-- IF THE USER REACHES 20+ POINTS THEN IT SHOULD PROCEED TO THE YOU WIN SCREEN
+-- this funtion increments the score only if the tigger is clicked. It then displays the new score 
+function WhackedTigger ( event )
+    -- if touched  phase just started 
+    if (event.phase == "began") then
+        -- INCREASE SCORE BY 1.
+        score = score + 5
+        if (score >= 20) then 
+            -- set the score bakc to zero 
+            score = 0
+            composer.gotoScene( "youWin")
+            winnerSoundChannel = audio.play(winnerSound)
+        end
+        -- THEN DISPLAY THE SCORE IN THE TEXT OBJECT.
+        scoreObject.text = "score = " .. score  
     end
 end
 
@@ -193,32 +252,32 @@ function scene:create( event )
     bkg_image.x = display.contentWidth / 2 
     bkg_image.y = display.contentHeight / 2
 
+    -- Insert background image into the scene group in order to ONLY be associated with this scene
+    sceneGroup:insert( bkg_image ) 
+
     -- Insert the Hearts
-    heart1 = display.newImageRect("Images/medicine.png", 80, 80)
+    heart1 = display.newImageRect("Images/medicine1.png", 80, 80)
     heart1.x = 50
     heart1.y = 50
+    
     heart1.isVisible = true
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( heart1 )
 
-    heart2 = display.newImageRect("Images/medicine.png", 80, 80)
-    heart2.x = 100
-    heart2.y = display.contentHeight /16
+    heart2 = display.newImageRect("Images/medicine1.png", 80, 80)
+    heart2.x = 150
+    heart2.y = 50--display.contentHeight /16
     heart2.isVisible = true
 
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( heart2 )
 
-    heart3 = display.newImageRect("Images/medicine.png", 80, 80)
-    heart3.x = 150
+    heart3 = display.newImageRect("Images/medicine1.png", 80, 80)
+    heart3.x = 250
     heart3.y = display.contentHeight /16
     heart3.isVisible = true
-
     -- Insert objects into the scene group in order to ONLY be associated with this scene
     sceneGroup:insert( heart3 )
-
-    -- Insert background image into the scene group in order to ONLY be associated with this scene
-    sceneGroup:insert( bkg_image ) 
 
     giraffe = display.newImage("Images/giraffe.png", 0, 0)    
     giraffe.x = 1890
@@ -226,6 +285,13 @@ function scene:create( event )
     -- giraffe:scale (.4, .4)
     giraffe.isVisible = false   
     sceneGroup:insert( giraffe )
+
+    monkey = display.newImage("Images/monkey.png", 0, 0)    
+    monkey.x = 1890
+    monkey.y = 490
+    monkey:scale (.5, .5)
+    monkey.isVisible = false   
+    sceneGroup:insert( monkey )
 
     -- creating the tigger 
     tigger = display.newImage( "Images/tigger.png", 0, 0)
@@ -269,8 +335,8 @@ function scene:show( event )
         GameStart()
         tigger:addEventListener("touch", WhackedTigger )
         giraffe:addEventListener("touch", WhackedTigger )
-        -- tigger:addEventListener("touch", Question )
-
+        monkey:addEventListener("touch", WhackedMonkey)
+        level1MusicChannel = audio.play(level1Music, {loops = -1})
         -- make all lives visible
         MakeHeartsVisible()
     end
