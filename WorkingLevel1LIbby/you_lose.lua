@@ -68,10 +68,14 @@ function scene:create( event )
     bkg.y = display.contentCenterY
     bkg.width = display.contentWidth
     bkg.height = display.contentHeight
+
+    clockText = display.newText("Oh No! You missed the car...", 512, 500, native.systemFontBold, 50)
+    clockText:setFillColor(0, 0, 0)
    
     -- Associating display objects with this scene 
     sceneGroup:insert( bkg )
     sceneGroup:insert( mainMenuButton )
+    sceneGroup:insert( clockText )
   
 end    
 

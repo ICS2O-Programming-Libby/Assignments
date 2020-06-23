@@ -38,11 +38,11 @@ local bkg
 
 -- Creating Transition to Level2 Screen
 local function Level2ScreenTransition()
-    composer.gotoScene( "level2_screen")
+    composer.gotoScene( "level1_screen")
 end 
 -- Creating Transition to Main Menu
 local function Level1ScreenTransition()
-    composer.gotoScene( "level1_screen")
+    composer.gotoScene( "level2_screen")
 end 
 
 -- Creating Transition to Main Menu

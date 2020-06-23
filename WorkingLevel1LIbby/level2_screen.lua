@@ -81,12 +81,12 @@ local GRAVITY = -2
 
 --  MOVE THE CAR WHEN THE TIMER RUNS OUT 
 
-local scrollspeed = 3
+local scrollspeed = 170
 
---[[local function MoveCar( event )
+local function MoveCar( event )
     -- make the car move one the timer runs out 
     car.x = car.x + scrollspeed 
-end]]
+end
 -----------------------------------------------------------------------------------------
 
 -- TIMER FUNCTIONS 
@@ -98,8 +98,9 @@ local function UpdateTime()
     -- display the number of seconds left in the clock object 
     clockText.text = secondsLeft .. ""
 
-   -- if(secondsLeft == 2) then 
-        --MoveCar()
+    if (secondsLeft == 1) then 
+        MoveCar()
+    end
 
     if (secondsLeft == 0) then 
        -- rest the number of seconds left 
@@ -128,7 +129,7 @@ end
 local function StartTimer()
     -- create a countdown timer that loops infinitely
     if (lives > 0) then
-        secondsLeft = 11
+        secondsLeft = 31
         countDownTimer = timer.performWithDelay(1000, UpdateTime, secondsLeft)
         print ("Start timer.")
     else
@@ -158,8 +159,9 @@ local function right (touch)
 
     if player.x >= 900 and (player.y <= 400 and player.y >= 350) then
         
-        composer.gotoScene( "youwin" )
-        winnerSoundChannel = audio.pause(winnerSound)
+        composer.gotoScene( "youWin" )
+        level2MusicChannel = audio.pause(level2Music)
+        winnerSoundChannel = audio.play(winnerSound)
         --YouWinTransition()
     end
 end
@@ -232,8 +234,8 @@ local function Replaceplayer()
     player.x = display.contentWidth * 0.5 / 8
     player.y = 400
     player.isVisible = true 
-    -- player.width = 100
-    -- player.height = 150
+    player.width = 100
+    player.height = 150
     player.myName = "Girl1"
 
     -- intialize horizontal movement of player
@@ -258,32 +260,41 @@ end
 
 local function AddPhysicsBodies()
     --adds the physics bodies to all of the objects called in this function 
+    --[[
     physics.addBody( wall1, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall2, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall3, "static", { density= 0, friction= 0, bounce= 0 } )
+    physics.addBody( wall3, "static", { density=1.0, friction=0.3, bounce=0.2 } )
     physics.addBody( wall4, "static", { density= 0, friction= 0, bounce= 0 } )
-    physics.addBody( wall5, "static", { density= 0, friction= 0, bounce= 0 } )
+    --]]
+    physics.addBody( wall5, "static", { density=1.0, friction=0.3, bounce=0.2 } )
+    --[[
     physics.addBody( wall6, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall7, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall8, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall9, "static", { density= 0, friction= 0, bounce= 0 } )
     physics.addBody( wall10, "static", { density= 0, friction= 0, bounce= 0 } )
     --physics.addBody( wall11, "static", { density= 0, friction= 0, bounce= 0 } )
+    --]]
     physics.addBody(car, "static", {density= 0, friction= 0, bounce= 0 })
+    
 end
 
 local function RemovePhysicsBodies()
 	-- takes away the physics bodies of all objects called in this function 
+    --[[
 	physics.removeBody(wall1)
     physics.removeBody(wall2)
     physics.removeBody(wall3)
     physics.removeBody(wall4)
+    --]]
     physics.removeBody(wall5)
+    --[[
     physics.removeBody(wall6)
     physics.removeBody(wall7)
     physics.removeBody(wall8)
     physics.removeBody(wall9)
     physics.removeBody(wall10)
+    --]]
     --physics.removeBody(wall11)
     -- MAKE THIS ONE FOR THE player CHOSEN BY THE UESR 
     physics.removeBody( player )
@@ -498,10 +509,15 @@ function scene:show( event )
 		
         -- add physics bodies to each object
         --AddPhysicsBodies()
+
         -- add collision listeners to objects
         --AddCollisionListeners()
+
         -- create the character, add physics bodies and runtime listeners
         Replaceplayer()
+
+        -- Move the car so the character misses it 
+        --timer.performWithDelay(7000, MoveCar)
 
         -- start the timer 
         StartTimer()
